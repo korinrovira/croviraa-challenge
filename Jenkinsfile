@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'nodo-1'
+        label 'final-challenge-pipeline'
     }
 
     stages {
@@ -24,20 +24,23 @@ pipeline {
 
         stage('Build docker image') {
             steps {
-                sh 'docker image build -t webapp-ucreativa .'
+                sh 'docker image build -t webapp-empresaxyz.com .'
             }
         }
 
         stage('Tag docker image') {
             steps {
-                sh 'docker image tag webapp-ucreativa korinrovira/webapp-ucreativa:latest'
+                sh 'docker image tag webapp-empresaxyz.com korinrovira/webapp-empresaxyz.com:latest'
             }
         }
 
         stage('Upload docker image') {
             steps {
-                sh 'docker login -u korinrovira -p &t33lD00r928+'
-                sh 'docker image push korinrovira/webapp-ucreativa:latest'
+                withCredentials([string(credentialsId: 'docker-id', variable: 'dockerpwd')]) {
+   sh 'docker login -u korinrovira -p ${dockerpwd} '
+                sh 'docker image push korinrovira/webapp-empresaxyz.com:latest'
+}
+                
             }
         }
     }
